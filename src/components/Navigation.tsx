@@ -8,7 +8,7 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-gray-800 p-4 mb-2">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white font-bold text-xl">Logo</div>
         <div className="lg:hidden">

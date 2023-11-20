@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 
-const ProjectName: React.FC = () => {
-  const [inputText, setInputText] = useState("");
+interface ProjectNameProps {
+  onNameChange: (name: string) => void;
+  initialName?: string; // Optional prop for initial project name
+}
+
+const ProjectName: React.FC<ProjectNameProps> = ({
+  onNameChange,
+  initialName = "",
+}) => {
+  const [inputText, setInputText] = useState(initialName);
   const [showInput, setShowInput] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -13,6 +21,7 @@ const ProjectName: React.FC = () => {
     if (inputText.trim() !== "") {
       setShowInput(false);
       setIsEditing(false);
+      onNameChange(inputText); // Call the onNameChange prop with the updated name
     } else {
       alert("Project name cannot be empty!");
     }
@@ -58,12 +67,6 @@ const ProjectName: React.FC = () => {
             Edit Name
           </button>
         )}
-
-        {/* {!showInput && (
-          <p className="text-gray-600 text-sm pt-2">
-            Project name saved. Click "Edit" to change the name.
-          </p>
-        )} */}
       </div>
     </div>
   );

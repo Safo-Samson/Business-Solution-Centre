@@ -1,39 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const ProjectDate: React.FC = () => {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+interface ProjectDateProps {
+  startDate: Date | null;
+  endDate: Date | null;
+  onStartDateChange: (date: Date | null) => void;
+  onEndDateChange: (date: Date | null) => void;
+}
+
+const ProjectDate: React.FC<ProjectDateProps> = ({
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
+}) => {
   const [numberOfDays, setNumberOfDays] = useState<number | null>(null);
 
-  const handleStartDateChange = (date: Date | null) => {
-    if (date && endDate && date > endDate) {
-      setEndDate(null);
-      setNumberOfDays(null);
+  useEffect(() => {
+    if (startDate && endDate) {
+      const diffInTime = endDate.getTime() - startDate.getTime();
+      const diffInDays = diffInTime / (1000 * 3600 * 24);
+      setNumberOfDays(diffInDays);
     } else {
-      setStartDate(date);
-      if (date && endDate) {
-        const diffInTime = endDate.getTime() - date.getTime();
-        const diffInDays = diffInTime / (1000 * 3600 * 24);
-        setNumberOfDays(diffInDays);
-      }
-    }
-  };
-
-  const handleEndDateChange = (date: Date | null) => {
-    if (date && startDate && date < startDate) {
-      setStartDate(null);
       setNumberOfDays(null);
-    } else {
-      setEndDate(date);
-      if (startDate && date) {
-        const diffInTime = date.getTime() - startDate.getTime();
-        const diffInDays = diffInTime / (1000 * 3600 * 24);
-        setNumberOfDays(diffInDays);
-      }
     }
-  };
+  }, [startDate, endDate]);
 
   return (
     <div className="flex items-start justify-start flex-col ml-4">
@@ -41,7 +33,7 @@ const ProjectDate: React.FC = () => {
         <h2 className="font-medium">Select Start Date:</h2>
         <DatePicker
           selected={startDate}
-          onChange={handleStartDateChange}
+          onChange={(date: Date | null) => onStartDateChange(date)}
           selectsStart
           startDate={startDate}
           endDate={endDate}
@@ -53,7 +45,7 @@ const ProjectDate: React.FC = () => {
         <h2 className="font-medium">Select End Date:</h2>
         <DatePicker
           selected={endDate}
-          onChange={handleEndDateChange}
+          onChange={(date: Date | null) => onEndDateChange(date)}
           selectsEnd
           startDate={startDate}
           endDate={endDate}

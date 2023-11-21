@@ -7,7 +7,11 @@ interface Member {
   skill: string;
 }
 
-const ProjectMembers: React.FC = () => {
+interface projectMembersProps {
+  addMembers: (members: string[]) => void;
+}
+
+const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
   const [showMembers, setShowMembers] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
@@ -54,6 +58,7 @@ const ProjectMembers: React.FC = () => {
       const memberToAdd = dummyMembers.find((member) => member.email === email);
       if (memberToAdd) {
         setSelectedMembers([...selectedMembers, memberToAdd]);
+        addMembers([...selectedMembers.map((member) => member.email), email]);
       }
     }
   };
@@ -61,7 +66,6 @@ const ProjectMembers: React.FC = () => {
   const handleRemoveMember = (email: string) => {
     setSelectedMemberToRemove(email);
   };
-
   const handleCancelRemove = () => {
     setSelectedMemberToRemove(null);
   };
@@ -72,6 +76,9 @@ const ProjectMembers: React.FC = () => {
     );
     setSelectedMembers(updatedMembers);
     setSelectedMemberToRemove(null);
+
+    const updatedEmails = updatedMembers.map((member) => member.email);
+    addMembers(updatedEmails);
   };
 
   return (

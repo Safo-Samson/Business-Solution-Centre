@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import CreateProject from "./CreateProject";
 import Navigation from "./Navigation";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Route, Routes } from "react-router-dom";
-import ViewProject from "./ViewProject";
 
 const ProjectMenu = ({ projectList: initialProjectList }) => {
   console.log(initialProjectList);
@@ -74,17 +71,6 @@ const ProjectMenu = ({ projectList: initialProjectList }) => {
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-4 rounded mt-4">
         Create New Project
       </button>
-
-      {/* Route to render ViewProject component with project details */}
-      {/* {projectList.map((project, index: number) => (
-        <Routes>
-          <Route
-            key={index}
-            path={`/project/${index}`}
-            element={<ViewProject {...project} />}
-          />
-        </Routes>
-      ))} */}
     </div>
   );
 };

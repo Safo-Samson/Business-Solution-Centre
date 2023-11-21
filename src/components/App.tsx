@@ -5,6 +5,8 @@ import CreateProjectPage from "../pages/CreateProjectPage";
 import Navigation from "./Navigation";
 import ProjectMenu from "./ProjectMenu";
 import ViewProject from "./ViewProject";
+import CreateProject from "./CreateProject";
+import Task from "./Task";
 import { useState } from "react";
 
 const App: React.FC = () => {
@@ -13,12 +15,24 @@ const App: React.FC = () => {
     JSON.parse(localStorage.getItem("projectList") || "[]")
   );
 
+  // Fetch the task list from localStorage or initialize an empty array
+  const [taskList, setTaskList] = useState(
+    JSON.parse(localStorage.getItem("taskList") || "[]")
+  );
+
   // Function to add a new project to the project list
-  const addProjectToList = (newProject) => {
+  const addProjectToList = (newProject: typeof CreateProject) => {
     const updatedProjectList = [...projectList, newProject];
     setProjectList(updatedProjectList);
     // Save the updated project list to localStorage
     localStorage.setItem("projectList", JSON.stringify(updatedProjectList));
+  };
+
+  const addTaskToList = (newTask: typeof Task) => {
+    const updatedTaskList = [...taskList, newTask];
+    setTaskList(updatedTaskList);
+    // Save the updated project list to localStorage
+    localStorage.setItem("taskList", JSON.stringify(updatedTaskList));
   };
 
   return (
@@ -36,6 +50,16 @@ const App: React.FC = () => {
       <Route
         path="/project/:id"
         element={<ViewProject projectList={projectList} />}
+      />
+
+      {/* <Route path="/create-task" element={<Task projectList={projectList} />} />
+       */}
+
+      <Route
+        path="/create-task/:id"
+        element={
+          <Task projectList={projectList} addTaskToList={addTaskToList} />
+        }
       />
 
       <Route

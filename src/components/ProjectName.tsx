@@ -50,7 +50,7 @@ const ProjectName: React.FC<ProjectNameProps> = ({
             <input
               type="text"
               className="border border-gray-300 rounded-md w-full py-2 px-3 mb-4 focus:outline-none focus:border-green-500"
-              placeholder="Enter project name..."
+              placeholder="Enter  name..."
               value={inputText}
               onChange={handleInputChange}
             />

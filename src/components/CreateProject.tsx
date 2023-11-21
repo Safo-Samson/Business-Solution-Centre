@@ -16,6 +16,7 @@ interface ProjectDetails {
   startDate: Date | null;
   endDate: Date | null;
   budget: number;
+  projectMembers?: string[];
   // Include other necessary fields here
 }
 
@@ -26,8 +27,13 @@ const CreateProject: React.FC<CreateProjectProps> = ({ addProjectToList }) => {
     startDate: null,
     endDate: null,
     budget: 0,
+    projectMembers: [],
     // Initialize other necessary fields here
   });
+
+  const addMembers = (members: string[]) => {
+    setProjectDetails({ ...projectDetails, projectMembers: members });
+  };
 
   const [showPopUp, setShowPopUp] = useState(false);
   const [budgetInput, setBudgetInput] = useState("");
@@ -125,7 +131,7 @@ const CreateProject: React.FC<CreateProjectProps> = ({ addProjectToList }) => {
             />
           </div>
           <div className="lg:w-1/3 pl-8">
-            <ProjectMembers />
+            <ProjectMembers addMembers={addMembers} />
           </div>
         </div>
         <button

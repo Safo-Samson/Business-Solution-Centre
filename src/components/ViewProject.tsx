@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navigation from "./Navigation";
+import TaskModal from "./TaskModal";
 
 interface ViewProjectProps {
   projectList: any[]; // Define the projectList prop here
@@ -109,6 +110,11 @@ const ViewProject: React.FC<ViewProjectProps> = ({
     console.log(projectMembers);
   }, []);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleAddTaskModal = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="container mx-auto bg-white p-6 border rounded shadow-md">
       <Navigation />
@@ -169,11 +175,24 @@ const ViewProject: React.FC<ViewProjectProps> = ({
           </div>
         ))
       )}
+
+      <TaskModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        addTaskToList={addTaskToList}
+        projectDetails={selectedProject} // Pass the selected project details
+        projectList={projectList}
+      />
       <button
+        onClick={handleAddTaskModal}
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 flex">
+        Add Task Modal
+      </button>
+      {/* <button
         onClick={handleAddTask}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 flex">
         Add Task
-      </button>
+      </button> */}
     </div>
   );
 };

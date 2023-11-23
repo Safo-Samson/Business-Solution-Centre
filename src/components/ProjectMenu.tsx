@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Navigation from "./Navigation";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+interface Project {
+  name: string;
+  budget: number;
+  startDate: string;
+  endDate: string;
+  members: string[];
+}
 
-const ProjectMenu = ({ projectList: initialProjectList }) => {
+const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
+  projectList: initialProjectList,
+}) => {
   console.log(initialProjectList);
   const location = useLocation();
   const [projectList, setProjectList] = useState(
@@ -13,6 +22,11 @@ const ProjectMenu = ({ projectList: initialProjectList }) => {
   const navigate = useNavigate();
   const handleCreateNewProject = () => {
     navigate("/project-creation");
+  };
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Adjust the formatting here as needed
   };
 
   useEffect(() => {
@@ -31,8 +45,6 @@ const ProjectMenu = ({ projectList: initialProjectList }) => {
       const isDuplicate = projectList.some(
         (project) =>
           project.name === projectDetails.name &&
-          // project.startDate.getTime() === projectDetails.startDate.getTime() &&
-          // project.endDate.getTime() === projectDetails.endDate.getTime() &&
           project.budget === projectDetails.budget
       );
 
@@ -47,6 +59,18 @@ const ProjectMenu = ({ projectList: initialProjectList }) => {
     <div className="container mx-auto bg-slate-100 pb-4">
       <Navigation />
       <h1 className="text-3xl text-center font-bold pt-4">Projects Menu</h1>
+
+      <div className="border-b-2 p-4">
+        <div className="grid grid-cols-6 gap-4">
+          <p className="text-lg font-bold">Project Name</p>
+          <p className="text-lg font-bold">Budget in £</p>
+          <p className="text-lg font-bold">Start Date</p>
+          <p className="text-lg font-bold">End Date</p>
+          <p className="text-lg font-bold">Members</p>
+          <p className="text-lg font-bold">Actions</p>
+        </div>
+      </div>
+
       {projectList.length === 0 ? (
         <p className="text-lg text-center font-bold">
           You currently have no projects
@@ -55,12 +79,18 @@ const ProjectMenu = ({ projectList: initialProjectList }) => {
         projectList.map((project, index) => (
           <div
             key={index}
-            className="flex justify-between items-center border-b-2 p-4">
-            <p className="text-lg">{project.name}</p>
+            className="border-b-2 p-4 grid grid-cols-6 gap-4 items-center">
+            <p className="text-lg col-span-1">{project.name}</p>
+            <p className="text-lg col-span-1">{project.budget}</p>
+            <p className="text-lg col-span-1">
+              {formatDate(project.startDate)}
+            </p>
+            <p className="text-lg col-span-1">{formatDate(project.endDate)}</p>
+            <p className="text-lg col-span-1">{project.members}</p>
             <Link
               to={`/project/${index}`} // Define a dynamic route for each project
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-              View Project
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded col-span-1">
+              Add Task
             </Link>
           </div>
         ))

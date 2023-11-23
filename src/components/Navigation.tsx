@@ -1,4 +1,11 @@
+import {
+  AiOutlineNotification,
+  AiOutlineMessage,
+  AiOutlineUser,
+  AiOutlineHome,
+} from "react-icons/ai";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navigation: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -10,7 +17,12 @@ const Navigation: React.FC = () => {
   return (
     <nav className="bg-gray-800 p-4 mb-2">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white font-bold text-xl">Logo</div>
+        <Link
+          to="/"
+          className="text-white font-bold text-xl"
+          title="Business Solution Center">
+          Logo
+        </Link>
         <div className="lg:hidden">
           {/* Hamburger menu icon/button */}
           <button
@@ -36,34 +48,51 @@ const Navigation: React.FC = () => {
             isMenuOpen ? "hidden" : "hidden" // Apply "hidden" class if isMenuOpen is true
           }`}>
           {/* Regular navigation links for larger screens */}
-          <a href="#" className="text-white hover:text-gray-300">
-            Home
-          </a>
-          <a href="#" className="text-white hover:text-gray-300">
-            About
-          </a>
-          <a href="#" className="text-white hover:text-gray-300">
-            Services
-          </a>
-          <a href="#" className="text-white hover:text-gray-300">
-            Contact
-          </a>
+          <Link
+            to="/"
+            className="text-white hover:text-gray-300 focus:outline-none"
+            title="Home">
+            <AiOutlineHome size={20} /> {/* Home icon */}
+          </Link>
+          <button
+            className="text-white hover:text-gray-300 focus:outline-none"
+            title="Notifications">
+            <AiOutlineNotification size={20} /> {/* Notification icon */}
+          </button>
+          <button
+            className="text-white hover:text-gray-300 focus:outline-none"
+            title="Messages">
+            <AiOutlineMessage size={20} /> {/* Chat icon */}
+          </button>
+          <button
+            className="text-white hover:text-gray-300 focus:outline-none"
+            title="Profile">
+            <AiOutlineUser size={20} /> {/* Profile icon */}
+          </button>
         </div>
         {/* Dropdown menu for smaller screens */}
         {isMenuOpen && (
           <div className="block lg:hidden">
-            <a href="#" className="text-white hover:text-gray-300 block py-2">
-              Home
-            </a>
-            <a href="#" className="text-white hover:text-gray-300 block py-2">
-              About
-            </a>
-            <a href="#" className="text-white hover:text-gray-300 block py-2">
-              Services
-            </a>
-            <a href="#" className="text-white hover:text-gray-300 block py-2">
-              Contact
-            </a>
+            <button
+              className="text-white hover:text-gray-300 focus:outline-none mr-3"
+              title="Home">
+              <AiOutlineHome size={20} /> {/* Home icon */}
+            </button>
+            <button
+              className="text-white hover:text-gray-300 focus:outline-none mr-3"
+              title="Notifications">
+              <AiOutlineNotification size={20} /> {/* Notification icon */}
+            </button>
+            <button
+              className="text-white hover:text-gray-300 focus:outline-none mr-3"
+              title="messages">
+              <AiOutlineMessage size={20} /> {/* Chat icon */}
+            </button>
+            <button
+              className="text-white hover:text-gray-300 focus:outline-none mr-3"
+              title="Profile">
+              <AiOutlineUser size={20} /> {/* Profile icon */}
+            </button>
           </div>
         )}
       </div>

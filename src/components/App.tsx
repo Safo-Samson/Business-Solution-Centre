@@ -7,8 +7,11 @@ import ProjectMenu from "./ProjectMenu";
 import ViewProject from "./ViewProject";
 import CreateProject from "./CreateProject";
 import Task from "./Task";
-import { useState } from "react";
-
+import TaskModal from "./TaskModal";
+import { useState, useEffect } from "react";
+import { MdAdd, MdFolder } from "react-icons/md";
+import Calendar from "react-calendar"; // Import react-calendar
+import "react-calendar/dist/Calendar.css"; // Import default calendar styles
 const App: React.FC = () => {
   // Fetch the project list from localStorage or initialize an empty array
   const [projectList, setProjectList] = useState(
@@ -35,6 +38,7 @@ const App: React.FC = () => {
     localStorage.setItem("taskList", JSON.stringify(updatedTaskList));
   };
 
+  const [date, setDate] = useState(new Date());
   return (
     <Routes>
       <Route
@@ -61,22 +65,54 @@ const App: React.FC = () => {
           <Task projectList={projectList} addTaskToList={addTaskToList} />
         }
       />
+      <Route
+        path="/create-task/:id"
+        element={
+          <TaskModal projectList={projectList} addTaskToList={addTaskToList} />
+        }
+      />
 
       <Route
         path="/"
         element={
           <>
             <Navigation />
-            <Link to="/project-creation">
-              <button className="bg-red-300 p-4 hover:bg-red-400 rounded">
-                Create New ProjectS
-              </button>
-            </Link>
-            <Link to="/project-menu">
-              <button className="bg-green-300 p-4 hover:bg-green-400 rounded">
-                View Project Menu
-              </button>
-            </Link>
+            <div className="min-h-screen flex flex-col  p-4 sm:p-8">
+              <h1 className="text-3xl text-center mt-4">
+                Hi Wael, Welcome to your dashboard!
+              </h1>
+              <div className="flex flex-col sm:flex-row justify-center items-center mt-4 ">
+                <Link to="/project-creation" className="mb-4 sm:mb-0 sm:mr-4">
+                  <button className="bg-red-300 p-4 sm:p-6 hover:bg-red-400 rounded mr-10">
+                    <h3 className="font-medium mb-3 sm:mb-7">
+                      Create New Project
+                    </h3>
+                    <MdAdd className="mx-10 mb-5 text-6xl sm:text-6xl text-red-700" />
+                  </button>
+                </Link>
+                <Link to="/project-menu" className="sm:mr-4">
+                  <button className="bg-green-300 p-4 sm:p-6 hover:bg-green-400 rounded mr-10">
+                    <h3 className="font-medium mb-3 sm:mb-7">
+                      View All Projects
+                    </h3>
+                    <MdFolder className=" mx-10 mb-5 text-6xl sm:text-6xl text-green-700" />
+                  </button>
+                </Link>
+                <div className="mt-4 sm:mt-0">
+                  {/* React Calendar Component */}
+                  <Calendar
+                    value={date}
+                    className="react-calendar"
+                    minDetail="month"
+                    showNavigation={true}
+                    selectRange={false}
+                    view="month"
+                    showNeighboringMonth={false}
+                    onClickDay={() => {}}
+                  />
+                </div>
+              </div>
+            </div>
           </>
         }
       />

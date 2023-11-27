@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import ClearIcon from "@mui/icons-material/Clear";
 import Navigation from "./Navigation";
 import TaskModal from "./TaskModal";
 
 interface ViewProjectProps {
   projectList: any[]; // Define the projectList prop here
-  addTaskToList: (task: TaskDetails) => void;
+  addTaskToList?: (task: TaskDetails) => void;
+  addMembers?: (members: string[]) => void;
 }
 
 interface TaskDetails {
@@ -19,7 +20,7 @@ interface TaskDetails {
 
 const ViewProject: React.FC<ViewProjectProps> = ({
   projectList,
-  addTaskToList,
+  addMembers,
 }) => {
   const { id } = useParams<{ id: string }>(); // Get the project ID from the URL params
   const location = useLocation();
@@ -34,15 +35,25 @@ const ViewProject: React.FC<ViewProjectProps> = ({
     JSON.parse(localStorage.getItem("taskList") || "[]")
   );
 
+  const addTaskToList = (newTask) => {
+    const updatedTaskList = [...taskList, newTask];
+    setTaskList(updatedTaskList);
+    // Save the updated project list to localStorage
+    localStorage.setItem("taskList", JSON.stringify(updatedTaskList));
+  };
+
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
+
+  const handleMembersModal = () => {
+    setIsMembersModalOpen(true);
+  };
+
+  const closeMembersModal = () => {
+    setIsMembersModalOpen(false);
+  };
+
   const navigate = useNavigate();
 
-  const handleAddTask = () => {
-    navigate(`/create-task/${id}`, {
-      state: {
-        projectDetails: selectedProject,
-      },
-    });
-  };
   // Check if id exists and is a valid number
   if (id === undefined || isNaN(parseInt(id))) {
     return <div>Invalid project ID</div>;
@@ -56,6 +67,8 @@ const ViewProject: React.FC<ViewProjectProps> = ({
     (project, index) => index === projectId
   );
 
+  const taskMembers = selectedProject?.projectMembers;
+
   // Retrieve the tasks associated with the project
   const projectTasks = taskList.filter(
     (task) => task.parentProjectId === projectId
@@ -63,7 +76,7 @@ const ViewProject: React.FC<ViewProjectProps> = ({
 
   useEffect(() => {
     // Retrieve the stored task from localStorage on component mount
-    const storedTasks = JSON.parse(localStorage.getItem("projectList") || "[]");
+    const storedTasks = JSON.parse(localStorage.getItem("taskList") || "[]");
     setTaskList(storedTasks);
   }, []);
 
@@ -105,22 +118,40 @@ const ViewProject: React.FC<ViewProjectProps> = ({
     return <div>Project not found</div>;
   }
 
-  const { name, startDate, endDate, budget, projectMembers } = selectedProject;
-  useEffect(() => {
-    console.log(projectMembers);
-  }, []);
+  const { name, startDate, endDate, budget, projectMembers, totalHours } =
+    selectedProject;
+
+  // Calculate the total budget of all tasks within the project
+  const totalTasksBudget = projectTasks.reduce(
+    (total, task) => total + task.taskBudget,
+    0
+  );
+
+  // Calculate the remaining budget within the project
+  const remainingBudget = budget - totalTasksBudget;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleAddTaskModal = () => {
     setIsModalOpen(true);
   };
 
+  // const handleAddTask = () => {
+  //   navigate(`/create-task/${id}`, {
+  //     state: {
+  //       projectDetails: selectedProject,
+  //     },
+  //   });
+  // };
+
   return (
     <div className="container mx-auto bg-white p-6 border rounded shadow-md">
       <Navigation />
-      <h2 className="text-2xl font-semibold mb-4">Project Name: {name}</h2>
-      <div className="flex flex-wrap">
-        <div className="w-full sm:w-auto sm:flex-grow mr-8 mb-4 sm:mb-0">
+      <h2 className="text-2xl font-semibold mb-4 font-serif">
+        Project Name: {name}
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="mb-4">
           <p>
             <span className="font-semibold">Start Date:</span>{" "}
             {startDate
@@ -128,71 +159,155 @@ const ViewProject: React.FC<ViewProjectProps> = ({
               : "Not specified"}
           </p>
         </div>
-        <div className="w-full sm:w-auto sm:flex-grow mr-8 mb-4 sm:mb-0">
+        <div className="mb-4">
           <p>
             <span className="font-semibold">End Date:</span>{" "}
             {endDate ? new Date(endDate).toLocaleDateString() : "Not specified"}
           </p>
         </div>
-        <div className="w-full sm:w-auto sm:flex-grow mr-8 mb-4 sm:mb-0">
+        <div className="mb-4">
           <p>
-            <span className="font-semibold">Budget:</span>{" "}
+            <span className="font-semibold">Days Remaining:</span>{" "}
+            {`${timeRemaining.days}d ${timeRemaining.hours}h ${timeRemaining.minutes}m`}
+          </p>
+        </div>
+        <div className="mb-4">
+          <p>
+            <span className="font-semibold">Hours:</span> {totalHours}
+          </p>
+        </div>
+        <div className="mb-4">
+          <p>
+            <span className="font-semibold">Allocated Budget:</span>{" "}
             {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "GBP",
             }).format(budget)}
           </p>
         </div>
-        <div className="w-full sm:w-auto sm:flex-grow">
+        <div className="mb-4">
           <p>
-            <span className="font-semibold">Days Remaining:</span>{" "}
-            {`${timeRemaining.days}d ${timeRemaining.hours}h ${timeRemaining.minutes}m`}
+            <span className="font-semibold">Budget Remaining:</span>{" "}
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "GBP",
+            }).format(remainingBudget)}
           </p>
         </div>
-
-        <div className="w-full sm:w-auto sm:flex-grow">
+        <div className="mb-4">
           <p>
-            <span className="font-semibold">
-              Members: {projectMembers.length}
-            </span>{" "}
+            <span className="font-semibold">Members:</span>{" "}
+            {projectMembers.length}
+          </p>
+          <p
+            className="font-semibold font-mono text-blue-500 cursor-pointer"
+            onClick={handleMembersModal}>
+            (see all)
           </p>
         </div>
       </div>
-      <h3 className="text-xl font-semibold mt-4 mb-2">Project Tasks</h3>
+      <h3 className="text-xl font-semibold mt-10 mb-2 font-serif">
+        Project Tasks ({projectTasks.length})
+      </h3>
+
       {projectTasks.length === 0 ? (
         <p className="text-lg">No tasks found</p>
       ) : (
-        projectTasks.map((task, index) => (
-          <div
-            key={index}
-            className="flex justify-between items-center border-b-2 p-4">
-            <p className="text-lg">{task.taskName}</p>
-            <Link
-              to={`/project/${projectId}/task/${index}`}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-              View Task
-            </Link>
-          </div>
-        ))
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className=" py-2 px-4 font-semibold">Task Name</th>
+                <th className=" py-2 px-4 font-semibold">Task Budget</th>
+                <th className=" py-2 px-4 font-semibold">Total Hours</th>
+                <th className=" py-2 px-4 font-semibold">Summary</th>
+                <th className=" py-2 px-4 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projectTasks.map((task, index) => (
+                <tr key={index} className="border-b">
+                  <td className="py-2 px-4">{task.taskName}</td>
+                  <td className="py-2 px-4">
+                    {new Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "GBP",
+                    }).format(task.taskBudget)}
+                  </td>
+                  <td className="py-2 px-4">{task.taskHours}</td>
+                  <td className="py-2 px-4">{task.description}</td>
+                  <td className="py-2 px-4">
+                    <ClearIcon
+                      fontSize="large"
+                      className="text-red-600 cursor-pointer"
+                      onClick={() => {
+                        const updatedTaskList = [...taskList];
+                        updatedTaskList.splice(index, 1);
+                        setTaskList(updatedTaskList);
+                        // Save the updated project list to localStorage
+                        localStorage.setItem(
+                          "taskList",
+                          JSON.stringify(updatedTaskList)
+                        );
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <TaskModal
+        addTaskToList={addTaskToList}
+        taskMembers={projectMembers}
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
-        addTaskToList={addTaskToList}
         projectDetails={selectedProject} // Pass the selected project details
         projectList={projectList}
       />
       <button
         onClick={handleAddTaskModal}
         className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 flex">
-        Add Task Modal
+        New Task
       </button>
       {/* <button
         onClick={handleAddTask}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 flex">
+        className="bg-blue-
+        
+        500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 flex">
         Add Task
       </button> */}
+
+      {isMembersModalOpen && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-4 border rounded shadow-md">
+            <h2 className="text-lg font-semibold mb-4  font-serif">
+              Members List
+            </h2>
+            <ul className="space-y-4 m-12">
+              {projectMembers.map((member, index) => (
+                <li key={index} className="flex items-center space-x-2">
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      member
+                    )}&size=32&background=random&color=fff`}
+                    alt={`${member}'s Avatar`}
+                    className="w-8 h-8 rounded-full ring-2 ring-green-500"
+                  />
+                  <span>{member}</span>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={closeMembersModal} // Close modal on click
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import Navigation from "../components/Navigation";
 import ProjectName from "../components/ProjectName";
 import ProjectDate from "../components/ProjectDate";
-import ProjectMembers from "../components/ProjectMembers";
+import TaskMembers from "../components/TaskMembers";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 interface TaskProps {
   addTaskToList: (task: TaskDetails) => void; // Function to add task to the list
   projectList: any[];
-  selectedProject: any;
+  selectedProject?: any;
 }
 
 interface TaskDetails {
@@ -86,6 +86,7 @@ const Task: React.FC<TaskProps> = ({ projectList, addTaskToList }) => {
     return true;
   };
 
+  const addMembers = projectDetails?.projectMembers;
   const handleTaskNameChange = (name: string) => {
     setTaskDetails({ ...taskDetails, taskName: name });
   };
@@ -129,7 +130,10 @@ const Task: React.FC<TaskProps> = ({ projectList, addTaskToList }) => {
         </div>
         <div className="flex flex-col lg:flex-row">
           <div className="lg:w-1/2 pr-4">
-            <ProjectMembers />
+            <TaskMembers
+              addMembers={addMembers}
+              taskMembers={projectDetails.projectMembers}
+            />
           </div>
         </div>
         <button

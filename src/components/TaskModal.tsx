@@ -3,16 +3,15 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import ProjectName from "./ProjectName";
 import ProjectDate from "./ProjectDate";
-import ProjectMembers from "./ProjectMembers";
-import Navigation from "./Navigation";
-
+import TaskMembers from "./TaskMembers";
+import TaskOverview from "./TaskOverView";
 interface AddTaskModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   addTaskToList: (task: TaskDetails) => void;
-  projectList?: any[];
-
+  projectList: any[];
   projectDetails: any;
+  taskMembers: (members: string[]) => void;
 }
 
 interface TaskDetails {
@@ -21,6 +20,8 @@ interface TaskDetails {
   taskEndDate: Date | null;
   taskBudget: number;
   parentProjectId?: number;
+  taskHours: number;
+  description?: string;
 }
 
 const TaskModal: React.FC<AddTaskModalProps> = ({
@@ -34,14 +35,18 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
     taskStartDate: null,
     taskEndDate: null,
     taskBudget: 0,
+    taskHours: 0,
   });
   const navigate = useNavigate();
   const handleCreateTask = () => {
     if (!validateTaskDetails()) {
       return;
     }
+
     addTaskToList(taskDetails);
     navigate(`/project/${projectId}`, { state: { taskDetails } });
+
+    onRequestClose(); // Close the modal after creating the task
   };
 
   const { id } = useParams<{ id: string }>();
@@ -59,6 +64,8 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
     (project, index) => index === projectId
   );
 
+  const addMembers = projectDetails?.projectMembers;
+
   const validateTaskDetails = (): boolean => {
     if (!taskDetails.taskName.trim()) {
       alert("Task Name is required.");
@@ -67,6 +74,10 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
 
     if (!taskDetails.taskStartDate || !taskDetails.taskEndDate) {
       alert("Start Date and End Date are required.");
+      return false;
+    }
+    if (!taskDetails.taskHours) {
+      alert("Task Hours is required.");
       return false;
     }
 
@@ -94,6 +105,15 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
     return true;
   };
 
+  const [hoursInput, setHoursInput] = useState("");
+  const handleHoursChange = (e) => {
+    const rawValue = e.target.value.replace(/[^0-9.]/g, ""); // Remove non-numeric characters
+    setHoursInput(rawValue);
+    setTaskDetails({
+      ...taskDetails,
+      taskHours: parseFloat(rawValue) || 0, // Parse string to float, default to 0 if empty or invalid
+    });
+  };
   const handleTaskNameChange = (name: string) => {
     setTaskDetails({ ...taskDetails, taskName: name });
   };
@@ -136,7 +156,7 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
           borderRadius: "8px",
         },
       }}>
-      <div className="container mx-auto bg-slate-100 pb-4">
+      <div className="container mx-auto bg-slate-100 pb-4 ">
         <h2 className="font-bold text-2xl flex justify-center items-center">
           Add New Task Details
         </h2>
@@ -149,6 +169,16 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
             onEndDateChange={handleTaskEndDateChange}
           />
           <div className="flex items-start justify-start flex-col ml-4 mt-2 mb-4">
+            Task Hours:
+            <input
+              type="text"
+              placeholder="0"
+              className="border-2 border-gray-400 py-2 px-4 mt-2 rounded-lg focus:outline-none focus:border-blue-500 "
+              value={`${hoursInput}`}
+              onChange={handleHoursChange}
+            />
+          </div>
+          <div className="flex items-start justify-start flex-col ml-4 mt-2 mb-4">
             Task Budget:
             <input
               type="text"
@@ -158,17 +188,27 @@ const TaskModal: React.FC<AddTaskModalProps> = ({
               onChange={handleTaskBudgetChange}
             />
           </div>
+          <div className="lg:w-2/3 pr-4">
+            <TaskOverview
+              onDescriptionChange={(description: string) =>
+                setTaskDetails({ ...taskDetails, description })
+              }
+            />
+          </div>
           <div className="flex flex-col lg:flex-row">
             <div className="lg:w-1/2 pr-4">
-              <ProjectMembers />
+              <TaskMembers
+                addMembers={addMembers}
+                taskMembers={projectDetails.projectMembers}
+              />
             </div>
           </div>
+          <button
+            onClick={handleCreateTask}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 p-5 text-white font-bold rounded flex justify-center items-center ml-6">
+            Create Task
+          </button>
         </div>
-        <button
-          onClick={handleCreateTask}
-          className="mt-4 bg-blue-500 hover:bg-blue-600 p-5 text-white font-bold rounded">
-          Create Task
-        </button>
       </div>
     </Modal>
   );

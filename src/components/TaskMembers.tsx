@@ -7,11 +7,15 @@ interface Member {
   skill: string;
 }
 
-interface projectMembersProps {
+interface TaskMembersProps {
   addMembers: (members: string[]) => void;
+  taskMembers: Member[];
 }
 
-const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
+const TaskMembers: React.FC<TaskMembersProps> = ({
+  taskMembers,
+  addMembers,
+}) => {
   const [showMembers, setShowMembers] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [selectedMembers, setSelectedMembers] = useState<Member[]>([]);
@@ -29,7 +33,7 @@ const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
     "Budgeting",
   ];
 
-  const dummyMembers: Member[] = [
+  taskMembers = [
     { email: "john.smith@lsbu.ac.uk", skill: "Systems Thinking" },
     { email: "emma.jones@lsbu.ac.uk", skill: "Risk Management" },
     { email: "michael.brown@lsbu.ac.uk", skill: "Process Optimization" },
@@ -39,29 +43,13 @@ const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
     { email: "james.anderson@lsbu.ac.uk", skill: "Budgeting" },
     { email: "lily.jackson@lsbu.ac.uk", skill: "Public Relations" },
     { email: "william.thomas@lsbu.ac.uk", skill: "Computer Science" },
-    { email: "mia.white@lsbu.ac.uk", skill: "Health" },
+    { email: "mia.white@lsbu.ac.uk", skill: "Market Research" },
     { email: "charles.harris@lsbu.ac.uk", skill: "Systems Thinking" },
     { email: "amelia.martin@lsbu.ac.uk", skill: "Risk Management" },
     { email: "benjamin.lee@lsbu.ac.uk", skill: "Process Optimization" },
     { email: "ava.thompson@lsbu.ac.uk", skill: "Accounting" },
     { email: "henry.garcia@lsbu.ac.uk", skill: "Market Research" },
-    { email: "lucas.baker@lsbu.ac.uk", skill: "Public Relations" },
-    { email: "natalie.rogers@lsbu.ac.uk", skill: "Computer Science" },
-    { email: "oliver.hall@lsbu.ac.uk", skill: "Health" },
-    { email: "chloe.cooper@lsbu.ac.uk", skill: "Systems Thinking" },
-    { email: "daniel.murphy@lsbu.ac.uk", skill: "Risk Management" },
-    { email: "grace.rossi@lsbu.ac.uk", skill: "Process Optimization" },
-    { email: "jack.hill@lsbu.ac.uk", skill: "Accounting" },
-    { email: "emily.peterson@lsbu.ac.uk", skill: "Market Research" },
-    { email: "owen.kelly@lsbu.ac.uk", skill: "Psychological mapping" },
-    { email: "sophie.bailey@lsbu.ac.uk", skill: "Budgeting" },
-    { email: "noah.carter@lsbu.ac.uk", skill: "Public Relations" },
-    { email: "lucy.evans@lsbu.ac.uk", skill: "Computer Science" },
-    { email: "ethan.ward@lsbu.ac.uk", skill: "Health" },
-    { email: "mia.roberts@lsbu.ac.uk", skill: "Systems Thinking" },
-    { email: "leo.nguyen@lsbu.ac.uk", skill: "Risk Management" },
   ];
-
   const handleShowMembers = () => {
     setShowMembers(!showMembers);
   };
@@ -72,7 +60,7 @@ const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
 
   const handleMemberClick = (email: string) => {
     if (!selectedMembers.find((member) => member.email === email)) {
-      const memberToAdd = dummyMembers.find((member) => member.email === email);
+      const memberToAdd = taskMembers.find((member) => member.email === email);
       if (memberToAdd) {
         setSelectedMembers([...selectedMembers, memberToAdd]);
         addMembers([...selectedMembers.map((member) => member.email), email]);
@@ -123,8 +111,8 @@ const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
       )}
       <button
         onClick={handleShowMembers}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        Assign project members
+        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline flex items-end justify-end  ml-4 mt-2 mb-4">
+        Add Task members
       </button>
       {showMembers && (
         <div className="mt-4">
@@ -146,7 +134,7 @@ const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
                 Project Members for {selectedSkill}:
               </h2>
               <ul className="cursor-pointer ">
-                {dummyMembers
+                {taskMembers
                   .filter((member) => member.skill === selectedSkill)
                   .map((filteredMember, index) => (
                     <li
@@ -175,4 +163,4 @@ const ProjectMembers: React.FC<projectMembersProps> = ({ addMembers }) => {
   );
 };
 
-export default ProjectMembers;
+export default TaskMembers;

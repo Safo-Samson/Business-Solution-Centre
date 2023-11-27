@@ -14,7 +14,7 @@ import Calendar from "react-calendar"; // Import react-calendar
 import "react-calendar/dist/Calendar.css"; // Import default calendar styles
 const App: React.FC = () => {
   // Fetch the project list from localStorage or initialize an empty array
-  const [projectList, setProjectList] = useState(
+  const [projectList, setProjectList]: any[] = useState(
     JSON.parse(localStorage.getItem("projectList") || "[]")
   );
 
@@ -31,7 +31,7 @@ const App: React.FC = () => {
     localStorage.setItem("projectList", JSON.stringify(updatedProjectList));
   };
 
-  const addTaskToList = (newTask: typeof Task) => {
+  const addTaskToList = (newTask) => {
     const updatedTaskList = [...taskList, newTask];
     setTaskList(updatedTaskList);
     // Save the updated project list to localStorage
@@ -65,12 +65,12 @@ const App: React.FC = () => {
           <Task projectList={projectList} addTaskToList={addTaskToList} />
         }
       />
-      <Route
+      {/* <Route
         path="/create-task/:id"
         element={
           <TaskModal projectList={projectList} addTaskToList={addTaskToList} />
         }
-      />
+      /> */}
 
       <Route
         path="/"

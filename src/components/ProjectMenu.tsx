@@ -13,10 +13,9 @@ interface Project {
   endDate: string;
   totalHours: number;
   projectMembers: string[];
+  chatRoomId: string;
   status: string;
 }
-
-
 
 // no avatars
 const renderAvatars = (members: string[]) => {
@@ -39,9 +38,7 @@ const renderAvatars = (members: string[]) => {
         </div>
       ))}
       {totalMembers > 3 && (
-        <p
-          className="text-base ml-2 font-mono font-semibold"
-          >
+        <p className="text-base ml-2 font-mono font-semibold">
           + {totalMembers - 3} more
         </p>
       )}
@@ -53,14 +50,22 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
   projectList: initialProjectList,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const [projectList, setProjectList] = useState(
     initialProjectList ||
       JSON.parse(localStorage.getItem("projectList") || "[]")
   );
+
+  // to help delete related chat rooms after deleting a project
+  const [chatRooms, updateChatRooms] = useState(
+    localStorage.getItem("chatRooms") || "[]"
+  );
+
   const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
   const [showPopUp, setShowPopUp] = useState(false);
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
 
-  const navigate = useNavigate();
   const handleCreateNewProject = () => {
     navigate("/project-creation");
   };
@@ -86,20 +91,38 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
 
   const handleConfirm = () => {
     setShowPopUp(false); // Hide the pop-up when confirmed
+
+    // Filter out the deleted projects
     const updatedProjectList = projectList.filter(
       (_, index) => !selectedProjects.includes(index)
     );
+
+    // Retrieve the existing chat rooms from localStorage
+    let updatedChatRooms = JSON.parse(
+      localStorage.getItem("chatRooms") || "[]"
+    );
+
+    // Remove chat rooms corresponding to the deleted projects
+    selectedProjects.forEach((index) => {
+      const deletedProject = projectList[index];
+      updatedChatRooms = updatedChatRooms.filter(
+        (chatRoom) => chatRoom.projectId !== deletedProject.name
+      );
+    });
+
+    // Update the project list and chat rooms
     setProjectList(updatedProjectList);
+    updateChatRooms(updatedChatRooms);
     setSelectedProjects([]); // Clear selected projects after deletion
-    // Update localStorage or perform any other necessary actions with the updated project list
+
+    // Update localStorage with the updated project list and chat rooms
     localStorage.setItem("projectList", JSON.stringify(updatedProjectList));
+    localStorage.setItem("chatRooms", JSON.stringify(updatedChatRooms));
   };
 
   const handleDeleteProjects = () => {
     setShowPopUp(true);
   };
-
-  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
   const handleMembersModal = () => {
     setIsMembersModalOpen(true);
   };
@@ -189,29 +212,32 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
       </div>
     );
   };
+
+  // Moved both useEffect hooks inside a single useEffect
   useEffect(() => {
-    // Retrieve the stored projects from localStorage on component mount
     const storedProjects = JSON.parse(
       localStorage.getItem("projectList") || "[]"
     );
-    setProjectList(storedProjects);
-  }, []);
 
-  useEffect(() => {
+    // Retrieve the stored projects from localStorage on component mount
+    setProjectList(storedProjects);
+
     let projectDetails = location.state?.projectDetails;
 
     if (projectDetails) {
-      // Check if projectDetails already exists in projectList based on specific criteria
-      const isDuplicate = projectList.some(
+      const isDuplicate = storedProjects.some(
         (project) => project.name === projectDetails.name
       );
 
       if (!isDuplicate) {
-        // Add projectDetails to projectList if it's not a duplicate and not overriding existing project
-        setProjectList((prevList) => [...prevList, projectDetails]);
+        const updatedProjectList = [...storedProjects, projectDetails];
+        setProjectList(updatedProjectList);
+
+        // Update localStorage with the updated project list
+        localStorage.setItem("projectList", JSON.stringify(updatedProjectList));
       }
     }
-  }, [location.state?.projectDetails]);
+  }, [location.state?.projectDetails]); // Dependencies moved to the single useEffect
 
   return (
     <div className="container mx-auto bg-slate-100 pb-4">
@@ -263,8 +289,8 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
             <p className="text-lg col-span-1">{project.name}</p>
             <p className="text-lg col-span-1">{project.totalHours}</p>
             <p className="text-lg col-span-1">
-              {/* {renderAvatars(project.projectMembers)} */}
-              {renderAvatarPics(project.projectMembers)}
+              {renderAvatars(project.projectMembers)}
+              {/* {renderAvatarPics(project.projectMembers)} */}
             </p>
             <p className="text-lg col-span-1">{project.status}</p>
 

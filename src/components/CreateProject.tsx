@@ -40,6 +40,10 @@ const CreateProject: React.FC<CreateProjectProps> = ({ addProjectToList }) => {
     setProjectDetails({ ...projectDetails, projectMembers: members });
   };
 
+  const [projectList, setProjectList]: any[] = useState(
+    JSON.parse(localStorage.getItem("projectList") || "[]")
+  );
+
   const [showPopUp, setShowPopUp] = useState(false);
   const [budgetInput, setBudgetInput] = useState("");
   const [hoursInput, setHoursInput] = useState("");
@@ -80,7 +84,15 @@ const CreateProject: React.FC<CreateProjectProps> = ({ addProjectToList }) => {
       alert(message);
       return; // Exit if validation fails
     }
+    // Check if the project name already exists in the project list
+    const isDuplicate = projectList.some(
+      (project) => project.name === projectDetails.name
+    );
 
+    if (isDuplicate) {
+      alert("Project name already exists. Please enter a different name.");
+      return; // Exit if project name already exists
+    }
     setShowPopUp(true); // Show the pop-up when Create Project button is clicked
   };
 
@@ -106,9 +118,28 @@ const CreateProject: React.FC<CreateProjectProps> = ({ addProjectToList }) => {
   const handleConfirm = () => {
     setShowPopUp(false); // Hide the pop-up when confirmed
 
+    // Get existing chat rooms from localStorage
+    const existingChatRooms = JSON.parse(
+      localStorage.getItem("chatRooms") || "[]"
+    );
+
+    // Create new chat room details
+    const chatRoomDetails = {
+      projectId: projectDetails.name, // For demo purposes, use the project name as the ID
+      projectName: projectDetails.name,
+      projectMembers: projectDetails.projectMembers || [],
+    };
+
+    // Add the new chat room to the existing list
+    const updatedChatRooms = [...existingChatRooms, chatRoomDetails];
+
+    // Store the updated list of chat rooms in localStorage
+    localStorage.setItem("chatRooms", JSON.stringify(updatedChatRooms));
+
     addProjectToList(projectDetails);
     navigate("/project-menu", { state: { projectDetails } });
   };
+
 
   const handleCancel = () => {
     setShowPopUp(false); // Hide the pop-up when canceled

@@ -59,11 +59,12 @@ const Navigation: React.FC = () => {
             title="Notifications">
             <AiOutlineNotification size={20} /> {/* Notification icon */}
           </button>
-          <button
+          <Link
+            to="/chat-rooms"
             className="text-white hover:text-gray-300 focus:outline-none"
-            title="Messages">
+            title="Chat rooms">
             <AiOutlineMessage size={20} /> {/* Chat icon */}
-          </button>
+          </Link>
           <button
             className="text-white hover:text-gray-300 focus:outline-none"
             title="Profile">

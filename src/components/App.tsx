@@ -6,12 +6,15 @@ import Navigation from "./Navigation";
 import ProjectMenu from "./ProjectMenu";
 import ViewProject from "./ViewProject";
 import CreateProject from "./CreateProject";
+import ProjectChatRoom from "./ProjectChatRoom";
 import Task from "./Task";
 import TaskModal from "./TaskModal";
 import { useState, useEffect } from "react";
 import { MdAdd, MdFolder } from "react-icons/md";
 import Calendar from "react-calendar"; // Import react-calendar
 import "react-calendar/dist/Calendar.css"; // Import default calendar styles
+import ProjectName from "./ProjectName";
+import ChatRooms from "./ChatRooms";
 const App: React.FC = () => {
   // Fetch the project list from localStorage or initialize an empty array
   const [projectList, setProjectList]: any[] = useState(
@@ -45,26 +48,41 @@ const App: React.FC = () => {
         path="/project-creation"
         element={<CreateProjectPage addProjectToList={addProjectToList} />}
       />
-
       <Route
         path="/project-menu/*"
         element={<ProjectMenu projectList={projectList} />}
       />
-
       <Route
         path="/project/:id"
         element={<ViewProject projectList={projectList} />}
       />
-
-      {/* <Route path="/create-task" element={<Task projectList={projectList} />} />
-       */}
+      {/* Dynamic routes for each chat room */}
 
       <Route
+        path="/project/:projectId/chat-room"
+        element={
+          <>
+            <Navigation />
+            <ProjectChatRoom projectList={projectList} />
+          </>
+        }
+      />
+
+      <Route
+        path="/chat-rooms/*"
+        element={
+          <>
+            <Navigation />
+            <ChatRooms chatRooms={projectList} />
+          </>
+        }
+      />
+      {/* <Route
         path="/create-task/:id"
         element={
           <Task projectList={projectList} addTaskToList={addTaskToList} />
         }
-      />
+      /> */}
       {/* <Route
         path="/create-task/:id"
         element={

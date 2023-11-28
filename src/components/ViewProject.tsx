@@ -55,6 +55,7 @@ const ViewProject: React.FC<ViewProjectProps> = ({
 
   const navigate = useNavigate();
 
+  // TO DO, USE THE NAME OF THE PORJECT AS THE ID
   // Check if id exists and is a valid number
   if (id === undefined || isNaN(parseInt(id))) {
     return <div>Invalid project ID</div>;

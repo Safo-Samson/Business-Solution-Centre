@@ -7,7 +7,6 @@ interface ProjectChatRoomProps {
 
 const ProjectChatRoom: React.FC<ProjectChatRoomProps> = ({ projectList }) => {
   const { projectId } = useParams<{ projectId: string }>();
-  console.log(projectId);
 
   // Find the project based on chatId
   const selectedProject = projectList.find(

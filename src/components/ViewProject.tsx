@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ClearIcon from "@mui/icons-material/Clear";
 import Navigation from "./Navigation";
 import TaskModal from "./TaskModal";
+import PopUpMenu from "./PopUpMenu";
 
 interface ViewProjectProps {
   projectList: any[]; // Define the projectList prop here
@@ -118,6 +119,33 @@ const ViewProject: React.FC<ViewProjectProps> = ({
     return <div>Project not found</div>;
   }
 
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [selectedTaskIndex, setSelectedTaskIndex] = useState(-1);
+
+  const handleDeleteTask = (index) => {
+    setSelectedTaskIndex(index); // Set the index of the selected task
+    setShowPopUp(true); // Show the confirmation popup
+  };
+
+  const handleConfirm = () => {
+    // Check if the selected task index is valid
+    if (selectedTaskIndex !== -1) {
+      const updatedTaskList = [...taskList];
+      updatedTaskList.splice(selectedTaskIndex, 1);
+      setTaskList(updatedTaskList);
+      // Save the updated project list to localStorage
+      localStorage.setItem("taskList", JSON.stringify(updatedTaskList));
+    }
+
+    setShowPopUp(false); // Hide the confirmation popup
+    setSelectedTaskIndex(-1); // Reset the selected task index
+  };
+
+  const handleCancel = () => {
+    setShowPopUp(false); // Hide the confirmation popup
+    setSelectedTaskIndex(-1); // Reset the selected task index
+  };
+
   const { name, startDate, endDate, budget, projectMembers, totalHours } =
     selectedProject;
 
@@ -205,6 +233,26 @@ const ViewProject: React.FC<ViewProjectProps> = ({
             (see all)
           </p>
         </div>
+        <div className="mb-4">
+          <p className="font-semibold">Update status:</p>
+          <select
+            className="border rounded p-1 mt-2"
+            value={selectedProject.status} // Set the value of the select element to the current project status
+            onChange={(e) => {
+              // Update the project status when an option is selected
+              const updatedProjectList = [...projectList];
+              updatedProjectList[projectId].status = e.target.value;
+              // Save the updated project list to localStorage
+              localStorage.setItem(
+                "projectList",
+                JSON.stringify(updatedProjectList)
+              );
+            }}>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
       </div>
       <h3 className="text-xl font-semibold mt-10 mb-2 font-serif">
         Project Tasks ({projectTasks.length})
@@ -240,16 +288,7 @@ const ViewProject: React.FC<ViewProjectProps> = ({
                     <ClearIcon
                       fontSize="large"
                       className="text-red-600 cursor-pointer"
-                      onClick={() => {
-                        const updatedTaskList = [...taskList];
-                        updatedTaskList.splice(index, 1);
-                        setTaskList(updatedTaskList);
-                        // Save the updated project list to localStorage
-                        localStorage.setItem(
-                          "taskList",
-                          JSON.stringify(updatedTaskList)
-                        );
-                      }}
+                      onClick={() => handleDeleteTask(index)}
                     />
                   </td>
                 </tr>
@@ -307,6 +346,14 @@ const ViewProject: React.FC<ViewProjectProps> = ({
             </button>
           </div>
         </div>
+      )}
+
+      {showPopUp && (
+        <PopUpMenu
+          message={`Are you sure you want to delete? This cannot be undone. `}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   );

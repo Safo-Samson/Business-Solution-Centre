@@ -16,52 +16,7 @@ interface Project {
   status: string;
 }
 
-// with avatars
-const renderAvatarPics = (members: string[]) => {
-  const totalMembers = members.length;
-  const displayedMembers = members.slice(0, 3);
 
-  const savedAvatars = JSON.parse(localStorage.getItem("avatarUrls") || "{}");
-
-  return (
-    <div className="relative inline-block">
-      <AvatarGroup max={3}>
-        {displayedMembers.map((member, index) => {
-          let avatarSrc = savedAvatars[member] || ""; // Retrieve saved avatar URL
-
-          // If the avatar URL doesn't exist for the member, generate a new one
-          if (!avatarSrc) {
-            avatarSrc =
-              Math.random() <= 0.5
-                ? `https://source.unsplash.com/random/100x100?sig=${index}`
-                : `https://ui-avatars.com/api/?name=${member}&rounded=true`;
-
-            // Save the generated avatar URL for the member in localStorage
-            localStorage.setItem(
-              "avatarUrls",
-              JSON.stringify({ ...savedAvatars, [member]: avatarSrc })
-            );
-          }
-
-          return (
-            <Tooltip title={member} key={index}>
-              <Avatar
-                className="w-6 h-6 rounded-full ring-2 ring-green-500 cursor-pointer"
-                alt={member}
-                src={avatarSrc}
-              />
-            </Tooltip>
-          );
-        })}
-      </AvatarGroup>
-      {totalMembers > 3 && (
-        <p className="text-base ml-2 font-mono font-semibold">
-          + {totalMembers - 3} more
-        </p>
-      )}
-    </div>
-  );
-};
 
 // no avatars
 const renderAvatars = (members: string[]) => {
@@ -84,7 +39,9 @@ const renderAvatars = (members: string[]) => {
         </div>
       ))}
       {totalMembers > 3 && (
-        <p className="text-base ml-2 font-mono font-semibold">
+        <p
+          className="text-base ml-2 font-mono font-semibold"
+          >
           + {totalMembers - 3} more
         </p>
       )}
@@ -124,7 +81,7 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
   };
 
   const handleCancel = () => {
-    setShowPopUp(false); // Hide the pop-up when canceled
+    setShowPopUp(false); // Hide the pop-up when cancelled
   };
 
   const handleConfirm = () => {
@@ -142,6 +99,96 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
     setShowPopUp(true);
   };
 
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
+  const handleMembersModal = () => {
+    setIsMembersModalOpen(true);
+  };
+
+  const closeMembersModal = () => {
+    setIsMembersModalOpen(false);
+  };
+
+  // with avatars
+  const renderAvatarPics = (members: string[]) => {
+    const totalMembers = members.length;
+    const displayedMembers = members.slice(0, 3);
+    const [showAllMembers, setShowAllMembers] = useState(false);
+
+    const savedAvatars = JSON.parse(localStorage.getItem("avatarUrls") || "{}");
+
+    const handleShowAllMembers = () => {
+      setShowAllMembers(!showAllMembers);
+    };
+
+    return (
+      <div className="relative inline-block">
+        <AvatarGroup max={6}>
+          {showAllMembers
+            ? members.map((member, index) => {
+                let avatarSrc = savedAvatars[member] || ""; // Retrieve saved avatar URL
+
+                // If the avatar URL doesn't exist for the member, generate a new one
+                if (!avatarSrc) {
+                  avatarSrc =
+                    Math.random() <= 0.5
+                      ? `https://source.unsplash.com/random/100x100?sig=${index}`
+                      : `https://ui-avatars.com/api/?name=${member}&rounded=true`;
+
+                  // Save the generated avatar URL for the member in localStorage
+                  localStorage.setItem(
+                    "avatarUrls",
+                    JSON.stringify({ ...savedAvatars, [member]: avatarSrc })
+                  );
+                }
+
+                return (
+                  <Tooltip title={member} key={index}>
+                    <Avatar
+                      className="w-6 h-6 rounded-full ring-2 ring-green-500 cursor-pointer"
+                      alt={member}
+                      src={avatarSrc}
+                    />
+                  </Tooltip>
+                );
+              })
+            : displayedMembers.map((member, index) => {
+                let avatarSrc = savedAvatars[member] || ""; // Retrieve saved avatar URL
+
+                // If the avatar URL doesn't exist for the member, generate a new one
+                if (!avatarSrc) {
+                  avatarSrc =
+                    Math.random() <= 0.5
+                      ? `https://source.unsplash.com/random/100x100?sig=${index}`
+                      : `https://ui-avatars.com/api/?name=${member}&rounded=true`;
+
+                  // Save the generated avatar URL for the member in localStorage
+                  localStorage.setItem(
+                    "avatarUrls",
+                    JSON.stringify({ ...savedAvatars, [member]: avatarSrc })
+                  );
+                }
+
+                return (
+                  <Tooltip title={member} key={index}>
+                    <Avatar
+                      className="w-6 h-6 rounded-full ring-2 ring-green-500 cursor-pointer"
+                      alt={member}
+                      src={avatarSrc}
+                    />
+                  </Tooltip>
+                );
+              })}
+        </AvatarGroup>
+        {totalMembers > 3 && (
+          <p
+            className="text-base ml-2 font-mono font-semibold cursor-pointer underline"
+            onClick={handleShowAllMembers}>
+            {showAllMembers ? "Show Less" : `+ ${totalMembers - 3} more`}
+          </p>
+        )}
+      </div>
+    );
+  };
   useEffect(() => {
     // Retrieve the stored projects from localStorage on component mount
     const storedProjects = JSON.parse(
@@ -169,7 +216,9 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
   return (
     <div className="container mx-auto bg-slate-100 pb-4">
       <Navigation />
-      <h1 className="text-3xl text-center font-bold pt-4">Projects Menu</h1>
+      <h1 className="text-3xl text-center font-bold pt-4 font-serif">
+        Projects Menu
+      </h1>
 
       <div className="border-b-2 p-4">
         <div className="grid grid-cols-7 gap-4">

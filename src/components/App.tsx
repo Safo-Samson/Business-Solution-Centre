@@ -12,7 +12,7 @@ import TaskModal from "./TaskModal";
 import { useState, useEffect } from "react";
 import { MdAdd, MdFolder } from "react-icons/md";
 import Calendar from "react-calendar"; // Import react-calendar
-import "react-calendar/dist/Calendar.css"; // Import default calendar styles
+import "react-calendar/dist/Calendar.css"; // Import default calendar style
 import ProjectName from "./ProjectName";
 import ChatRooms from "./ChatRooms";
 const App: React.FC = () => {

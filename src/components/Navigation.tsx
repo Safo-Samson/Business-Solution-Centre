@@ -73,7 +73,7 @@ const Navigation: React.FC = () => {
         </div>
         {/* Dropdown menu for smaller screens */}
         {isMenuOpen && (
-          <div className="block lg:hidden flex gap-4">
+          <div className="lg:hidden flex gap-4">
             {" "}
             {/* Use flex and set gap */}
             <Link

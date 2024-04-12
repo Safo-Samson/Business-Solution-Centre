@@ -286,7 +286,9 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
                   ? "text-red-600 cursor-pointer "
                   : "text-red-300 cursor-not-allowed"
               }`}
-              onClick={handleDeleteProjects}
+              onClick={
+                selectedProjects.length > 0 ? handleDeleteProjects : undefined
+              }
             />
           </p>
         </div>

@@ -73,29 +73,21 @@ const Navigation: React.FC = () => {
         </div>
         {/* Dropdown menu for smaller screens */}
         {isMenuOpen && (
-          <div className="block lg:hidden">
+          <div className="block lg:hidden flex gap-4">
+            {" "}
+            {/* Use flex and set gap */}
             <Link
               to="/"
               className="text-white hover:text-gray-300 focus:outline-none"
               title="Home">
               <AiOutlineHome size={20} /> {/* Home icon */}
             </Link>
-            {/* <button
-              className="text-white hover:text-gray-300 focus:outline-none mr-3"
-              title="Notifications">
-              <AiOutlineNotification size={20} />
-            </button> */}
             <Link
               to="/chat-rooms"
               className="text-white hover:text-gray-300 focus:outline-none"
               title="Chat rooms">
               <AiOutlineMessage size={20} /> {/* Chat icon */}
             </Link>
-            {/* <button
-              className="text-white hover:text-gray-300 focus:outline-none mr-3"
-              title="Profile">
-              <AiOutlineUser size={20} />
-            </button> */}
           </div>
         )}
       </div>

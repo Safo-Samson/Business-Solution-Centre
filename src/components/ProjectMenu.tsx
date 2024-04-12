@@ -239,85 +239,60 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
     }
   }, [location.state?.projectDetails]); // Dependencies moved to the single useEffect
 
-  return (
-    <div className="container mx-auto bg-slate-100 pb-4">
-      <Navigation />
-      <h1 className="text-3xl text-center font-bold pt-4 font-serif">
-        Projects Menu
-      </h1>
+    return (
+      <div className="container mx-auto bg-slate-100 pb-4">
+        <Navigation />
+        <h1 className="text-3xl text-center font-bold pt-4 font-serif">
+          Projects Menu
+        </h1>
 
-      <div className="border-b-2 p-4">
-        <div className="grid grid-cols-7 gap-4">
-          <p className="text-lg font-bold">Select</p>
-          <p className="text-lg font-bold">Project Name</p>
-          <p className="text-lg font-bold">Total Hours</p>
-          <p className="text-lg font-bold">Members</p>
-          <p className="text-lg font-bold">Status</p>
-          <p className="text-lg font-bold">Actions</p>
-          <p className="text-lg font-bold">
-            <DeleteIcon
-              fontSize="large"
-              className={`${
-                selectedProjects.length > 0
-                  ? "text-red-600 cursor-pointer "
-                  : "text-red-300 cursor-not-allowed"
-              }`}
-              onClick={handleDeleteProjects}
-            />
-          </p>
-        </div>
-      </div>
-
-      {projectList.length === 0 ? (
-        <p className="text-lg text-center font-bold">
-          You currently have no projects
-        </p>
-      ) : (
-        // show check box here which will be used to delete the project
-        projectList.map((project, index) => (
-          <div
-            key={index}
-            className="border-b-2 p-4 grid grid-cols-7 gap-4 items-center">
-            <input
-              type="checkbox"
-              onChange={() => {
-                // Handle selecting all projects for deletion
-                toggleProjectSelection(index);
-              }}
-              checked={selectedProjects.includes(index)}
-            />
-            <p className="text-lg col-span-1">{project.name}</p>
-            <p className="text-lg col-span-1">{project.totalHours}</p>
-            <p className="text-lg col-span-1">
-              {renderAvatars(project.projectMembers)}
-              {/* {renderAvatarPics(project.projectMembers)} */}
+        {/* Table Header */}
+        <div className="border-b-2 p-4 hidden md:block">
+          <div className="grid grid-cols-7 gap-4">
+            <p className="text-lg font-bold">Select</p>
+            <p className="text-lg font-bold">Project Name</p>
+            <p className="text-lg font-bold">Total Hours</p>
+            <p className="text-lg font-bold">Members</p>
+            <p className="text-lg font-bold">Status</p>
+            <p className="text-lg font-bold">Actions</p>
+            <p className="text-lg font-bold">
+              <DeleteIcon
+                fontSize="large"
+                className={`${
+                  selectedProjects.length > 0
+                    ? "text-red-600 cursor-pointer "
+                    : "text-red-300 cursor-not-allowed"
+                }`}
+                onClick={handleDeleteProjects}
+              />
             </p>
-            <p className="text-lg col-span-1">{project.status}</p>
-
-            <button
-              onClick={() => handleViewProject(index)}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded col-span-1">
-              View Project
-            </button>
           </div>
-        ))
-      )}
+        </div>
 
-      <button
-        onClick={() => handleCreateNewProject()}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-4 rounded mt-4">
-        Create New Project
-      </button>
+        {/* Project List */}
+        {projectList.map((project, index) => (
+          <div key={index} className="border-b-2 p-4">
+            {/* Display Project Information */}
+          </div>
+        ))}
 
-      {showPopUp && (
-        <PopUpMenu
-          message={`Are you sure you want to delete? This cannot be undone. `}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
-      )}
-    </div>
-  );
+        {/* Create New Project Button */}
+        <button
+          onClick={handleCreateNewProject}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-4 rounded mt-4 block mx-auto md:hidden">
+          Create New Project
+        </button>
+
+        {/* Pop-up Menu */}
+        {showPopUp && (
+          <PopUpMenu
+            message={`Are you sure you want to delete? This cannot be undone. `}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+          />
+        )}
+      </div>
+    );
 };
 
 export default ProjectMenu;

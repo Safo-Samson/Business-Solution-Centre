@@ -6,6 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PopUpMenu from "./PopUpMenu";
+import useMediaQuery from "@mui/material/useMediaQuery";
 interface Project {
   name: string;
   budget: number;
@@ -239,21 +240,44 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
     }
   }, [location.state?.projectDetails]); // Dependencies moved to the single useEffect
 
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
   return (
     <div className="container mx-auto bg-slate-100 pb-4">
       <Navigation />
-      <h1 className="text-3xl text-center font-bold pt-4 font-serif">
+      <h1 className="text-3xl text-center font-bold py-4 font-serif bg-slate-200">
         Projects Menu
       </h1>
 
       <div className="border-b-2 p-4">
         <div className="grid grid-cols-7 gap-4">
-          <p className="text-lg font-bold">Select</p>
-          <p className="text-lg font-bold">Project Name</p>
-          <p className="text-lg font-bold">Total Hours</p>
-          <p className="text-lg font-bold">Members</p>
-          <p className="text-lg font-bold">Status</p>
-          <p className="text-lg font-bold">Actions</p>
+          {!isSmallScreen && (
+            <p className="text-lg font-bold font-serif">Select</p>
+          )}
+          {!isSmallScreen && (
+            <p className="text-lg font-bold font-serif">Project Name</p>
+          )}
+          {!isSmallScreen && (
+            <p className="text-lg font-bold font-serif">Total Hours</p>
+          )}
+          {!isSmallScreen && (
+            <p className="text-lg font-bold font-serif">Members</p>
+          )}
+          {!isSmallScreen && (
+            <p className="text-lg font-bold font-serif">Status</p>
+          )}
+          {!isSmallScreen && (
+            <p className="text-lg font-bold font-serif">Actions</p>
+          )}
+
+          {isSmallScreen && (
+            <p className="text-lg font-bold col-span-2 font-serif">Select</p>
+          )}
+          {isSmallScreen && (
+            <p className="text-lg font-bold col-span-2 font-serif">
+              Project Name
+            </p>
+          )}
+
           <p className="text-lg font-bold">
             <DeleteIcon
               fontSize="large"
@@ -286,17 +310,26 @@ const ProjectMenu: React.FC<{ projectList: Project[] }> = ({
               }}
               checked={selectedProjects.includes(index)}
             />
-            <p className="text-lg col-span-1">{project.name}</p>
-            <p className="text-lg col-span-1">{project.totalHours}</p>
-            <p className="text-lg col-span-1">
-              {renderAvatars(project.projectMembers)}
-              {/* {renderAvatarPics(project.projectMembers)} */}
-            </p>
-            <p className="text-lg col-span-1">{project.status}</p>
 
+            {!isSmallScreen && (
+              <>
+                <p className="text-lg col-span-1">{project.name}</p>
+                <p className="text-lg col-span-1">{project.totalHours}</p>
+                <p className="text-lg col-span-1">
+                  {renderAvatars(project.projectMembers)}
+                </p>
+                <p className="text-lg col-span-1">{project.status}</p>
+              </>
+            )}
+
+            {isSmallScreen && (
+              <>
+                <p className="text-lg col-span-4">{project.name}</p>
+              </>
+            )}
             <button
               onClick={() => handleViewProject(index)}
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded col-span-1">
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded col-span-2">
               View Project
             </button>
           </div>

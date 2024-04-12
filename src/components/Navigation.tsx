@@ -54,22 +54,22 @@ const Navigation: React.FC = () => {
             title="Home">
             <AiOutlineHome size={20} /> {/* Home icon */}
           </Link>
-          <button
+          {/* <button
             className="text-white hover:text-gray-300 focus:outline-none"
             title="Notifications">
-            <AiOutlineNotification size={20} /> {/* Notification icon */}
-          </button>
+            <AiOutlineNotification size={20} /> 
+          </button> */}
           <Link
             to="/chat-rooms"
             className="text-white hover:text-gray-300 focus:outline-none"
             title="Chat rooms">
             <AiOutlineMessage size={20} /> {/* Chat icon */}
           </Link>
-          <button
+          {/* <button
             className="text-white hover:text-gray-300 focus:outline-none"
             title="Profile">
-            <AiOutlineUser size={20} /> {/* Profile icon */}
-          </button>
+            <AiOutlineUser size={20} /> 
+          </button> */}
         </div>
         {/* Dropdown menu for smaller screens */}
         {isMenuOpen && (
@@ -79,21 +79,21 @@ const Navigation: React.FC = () => {
               title="Home">
               <AiOutlineHome size={20} /> {/* Home icon */}
             </button>
-            <button
+            {/* <button
               className="text-white hover:text-gray-300 focus:outline-none mr-3"
               title="Notifications">
-              <AiOutlineNotification size={20} /> {/* Notification icon */}
-            </button>
+              <AiOutlineNotification size={20} />
+            </button> */}
             <button
               className="text-white hover:text-gray-300 focus:outline-none mr-3"
               title="messages">
               <AiOutlineMessage size={20} /> {/* Chat icon */}
             </button>
-            <button
+            {/* <button
               className="text-white hover:text-gray-300 focus:outline-none mr-3"
               title="Profile">
-              <AiOutlineUser size={20} /> {/* Profile icon */}
-            </button>
+              <AiOutlineUser size={20} />
+            </button> */}
           </div>
         )}
       </div>

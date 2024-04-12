@@ -97,7 +97,7 @@ const App: React.FC = () => {
             <Navigation />
             <div className="min-h-screen flex flex-col  p-4 sm:p-8">
               <h1 className="text-3xl text-center mt-4">
-                Hi Wael, Welcome to your dashboard!
+                Welcome to your dashboard! - {date.toDateString()}
               </h1>
               <div className="flex flex-col sm:flex-row justify-center items-center mt-4 ">
                 <Link to="/project-creation" className="mb-4 sm:mb-0 sm:mr-4">

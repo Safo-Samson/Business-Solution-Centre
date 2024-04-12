@@ -21,7 +21,7 @@ const Navigation: React.FC = () => {
           to="/"
           className="text-white font-bold text-xl"
           title="Business Solution Center">
-          Logo
+          Business Solution Center
         </Link>
         <div className="lg:hidden">
           {/* Hamburger menu icon/button */}

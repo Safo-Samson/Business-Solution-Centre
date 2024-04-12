@@ -101,11 +101,11 @@ const App: React.FC = () => {
               </h1>
               <div className="flex flex-col sm:flex-row justify-center items-center mt-4 ">
                 <Link to="/project-creation" className="mb-4 sm:mb-0 sm:mr-4">
-                  <button className="bg-red-300 p-4 sm:p-6 hover:bg-red-400 rounded mr-10">
+                  <button className="bg-blue -300 p-4 sm:p-6 hover:bg-blue-400 rounded mr-10">
                     <h3 className="font-medium mb-3 sm:mb-7">
                       Create New Project
                     </h3>
-                    <MdAdd className="mx-10 mb-5 text-6xl sm:text-6xl text-red-700" />
+                    <MdAdd className="mx-10 mb-5 text-6xl sm:text-6xl text-blue-700" />
                   </button>
                 </Link>
                 <Link to="/project-menu" className="sm:mr-4">

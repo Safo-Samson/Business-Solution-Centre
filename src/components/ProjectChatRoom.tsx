@@ -89,7 +89,7 @@ const ProjectChatRoom: React.FC<ProjectChatRoomProps> = ({ projectList }) => {
 
       <form
         onSubmit={handleMessageSubmit}
-        className="flex items-center justify-between bg-white p-4 border-t">
+        className="flex items-center justify-between bg-white p-4 border-t sticky bottom-0">
         <input
           type="text"
           placeholder="Type your message..."

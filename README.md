@@ -1,4 +1,3 @@
 Business Solution Centre (BSC)
 
-This repository contains code to create a simplified project management software to be used 
-by LSBU BSC.
+Creating a project management tool like Jira and Trello with inbuilt chat functuality, but much more simplified for managers.
